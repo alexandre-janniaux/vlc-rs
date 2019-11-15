@@ -143,7 +143,7 @@ pub struct libvlc_media_track_info_t {
     /* Codec specific */
     pub i_profile: c_int,
     pub i_level: c_int,
-    
+
     pub u: libvlc_media_track_info_t_types::u,
 }
 
@@ -235,6 +235,15 @@ impl libvlc_media_track_t {
     }
 }
 
+#[repr(C)]
+pub enum libvlc_media_parse_flag_t {
+    libvlc_media_parse_local = 0x00,
+    libvlc_media_parse_network = 0x01,
+    libvlc_media_fetch_local = 0x02,
+    libvlc_media_fetch_network = 0x04,
+    libvlc_media_do_interact = 0x08,
+}
+
 extern "C" {
     pub fn libvlc_media_new_location(p_instance: *mut libvlc_instance_t, psz_mrl: *const c_char)
                                      -> *mut libvlc_media_t;
@@ -266,7 +275,11 @@ extern "C" {
                                      -> libvlc_time_t;
     pub fn libvlc_media_parse(p_md: *mut libvlc_media_t);
     pub fn libvlc_media_parse_async(p_md: *mut libvlc_media_t);
+    pub fn libvlc_media_parse_with_option(p_md: *mut libvlc_media_t,
+                                          parse_flag: libvlc_media_parse_flag_t,
+                                          timeout: c_int);
     pub fn libvlc_media_is_parsed(p_md: *mut libvlc_media_t) -> c_int;
+    pub fn libvlc_media_get_parsed_status(p_md: *mut libvlc_media_t) -> c_int;
     pub fn libvlc_media_set_user_data(p_md: *mut libvlc_media_t,
                                       p_new_user_data: *mut c_void);
     pub fn libvlc_media_get_user_data(p_md: *mut libvlc_media_t) -> *mut c_void;
